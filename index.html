@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز المهندس</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --bg-soft: #eef6f4;
+            --ink: #17202a;
+            --muted: #667085;
+            --brand: #0f766e;
+            --brand-strong: #115e59;
+            --accent: #f59e0b;
+            --surface: #ffffff;
+            --surface-2: #f9fafb;
+            --line: #e5e7eb;
+            --whatsapp: #25d366;
+            --shadow: 0 18px 38px rgba(23, 32, 42, .08);
+        }
+
+        body.dark {
+            --bg: #101828;
+            --bg-soft: #182230;
+            --ink: #f9fafb;
+            --muted: #cbd5e1;
+            --brand: #5eead4;
+            --brand-strong: #2dd4bf;
+            --accent: #fbbf24;
+            --surface: #1d2939;
+            --surface-2: #111827;
+            --line: #344054;
+            --shadow: 0 18px 38px rgba(0, 0, 0, .24);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Tahoma, Arial, sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 8% 10%, rgba(245, 158, 11, .16), transparent 26%),
+                linear-gradient(135deg, var(--bg) 0%, var(--bg-soft) 52%, var(--surface-2) 100%);
+            min-height: 100vh;
+            transition: background .25s ease, color .25s ease;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: center;
+            padding: 12px clamp(14px, 3vw, 28px);
+            background: rgba(255, 255, 255, .82);
+            border-bottom: 1px solid var(--line);
+            backdrop-filter: blur(14px);
+        }
+
+        body.dark .topbar {
+            background: rgba(16, 24, 40, .84);
+        }
+
+        .time-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            min-height: 36px;
+            padding: 7px 11px;
+            color: var(--ink);
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 8px 18px rgba(23, 32, 42, .05);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .tool-button {
+            min-height: 38px;
+            padding: 8px 12px;
+            border: 1px solid var(--line);
+            border-radius: 7px;
+            color: var(--ink);
+            background: var(--surface);
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        .tool-button.primary {
+            color: #fff;
+            background: var(--brand-strong);
+            border-color: transparent;
+        }
+
+        .site-content {
+            transition: opacity .2s ease;
+        }
+
+        .hero {
+            min-height: 50vh;
+            display: grid;
+            place-items: center;
+            padding: 52px 18px 32px;
+            text-align: center;
+        }
+
+        .brand {
+            width: min(860px, 100%);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            padding: 9px 14px;
+            color: #0f513f;
+            background: rgba(15, 118, 110, .11);
+            border: 1px solid rgba(15, 118, 110, .2);
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        body.dark .badge {
+            color: #ccfbf1;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(46px, 8vw, 96px);
+            line-height: 1.08;
+            color: var(--brand);
+            text-shadow: 0 10px 28px rgba(15, 118, 110, .14);
+            letter-spacing: 0;
+        }
+
+        .owner {
+            margin: 14px 0 0;
+            font-size: clamp(20px, 3.2vw, 34px);
+            font-weight: 700;
+            color: var(--ink);
+        }
+
+        .tagline {
+            margin: 18px auto 0;
+            max-width: 620px;
+            color: var(--muted);
+            font-size: clamp(16px, 2vw, 20px);
+            line-height: 1.8;
+        }
+
+        .ticker {
+            position: relative;
+            overflow: hidden;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .contact-ticker {
+            background: #17202a;
+            border-block: 4px solid var(--accent);
+        }
+
+        .address-ticker {
+            background: var(--brand-strong);
+            border-bottom: 1px solid rgba(255, 255, 255, .22);
+        }
+
+        .ticker-track {
+            display: inline-flex;
+            gap: 34px;
+            min-width: 200%;
+            padding: 14px 0;
+            animation: ticker 18s linear infinite;
+        }
+
+        .ticker-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 34px;
+            padding-inline: 17px;
+        }
+
+        .contact-item,
+        .address-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: clamp(17px, 2vw, 24px);
+            font-weight: 800;
+        }
+
+        .icon {
+            width: 32px;
+            height: 32px;
+            display: inline-grid;
+            place-items: center;
+            flex: 0 0 32px;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .icon-whatsapp {
+            background: var(--whatsapp);
+        }
+
+        .icon-mobile {
+            background: var(--accent);
+        }
+
+        .icon-address {
+            background: rgba(255, 255, 255, .18);
+            border: 1px solid rgba(255, 255, 255, .28);
+        }
+
+        .prayer-strip {
+            width: min(1080px, calc(100% - 32px));
+            margin: 28px auto 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+            gap: 10px;
+        }
+
+        .prayer-card {
+            min-height: 72px;
+            display: grid;
+            align-content: center;
+            gap: 5px;
+            padding: 12px;
+            text-align: center;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 10px 22px rgba(23, 32, 42, .06);
+        }
+
+        .prayer-card span {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .prayer-card strong {
+            font-size: 18px;
+            color: var(--brand-strong);
+        }
+
+        .products {
+            width: min(1080px, calc(100% - 32px));
+            margin: 42px auto 60px;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            margin: 0;
+            font-size: clamp(24px, 4vw, 36px);
+            color: var(--ink);
+        }
+
+        .maintenance-note {
+            display: none;
+            padding: 9px 12px;
+            color: #7a4a00;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 7px;
+            font-weight: 800;
+        }
+
+        body.dark .maintenance-note {
+            color: #fef3c7;
+            background: rgba(245, 158, 11, .12);
+        }
+
+        body.admin-on.maintenance .maintenance-note {
+            display: inline-flex;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+        }
+
+        .product {
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .product img {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            object-fit: cover;
+            display: block;
+            background: #e7f1ef;
+        }
+
+        .product-body {
+            padding: 18px;
+        }
+
+        .product h3 {
+            margin: 0 0 8px;
+            font-size: 22px;
+        }
+
+        .product p {
+            margin: 0 0 16px;
+            color: var(--muted);
+            font-size: 17px;
+        }
+
+        .order {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            min-height: 46px;
+            color: #fff;
+            background: var(--brand-strong);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 800;
+            transition: transform .2s ease, background .2s ease;
+        }
+
+        .order:hover {
+            transform: translateY(-2px);
+        }
+
+        .delete-product {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: none;
+            min-height: 34px;
+            padding: 7px 10px;
+            border: 0;
+            border-radius: 6px;
+            color: #fff;
+            background: #dc2626;
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        body.admin-on .delete-product {
+            display: inline-flex;
+        }
+
+        .credit {
+            position: relative;
+            overflow: hidden;
+            padding: 26px 14px 32px;
+            text-align: center;
+            color: var(--ink);
+            background: var(--surface);
+            border-top: 1px solid var(--line);
+        }
+
+        .credit span {
+            display: inline-block;
+            font-size: clamp(18px, 2.4vw, 26px);
+            font-weight: 900;
+            color: transparent;
+            background: linear-gradient(90deg, var(--brand), var(--accent), var(--brand));
+            background-size: 220% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shine 3.5s ease-in-out infinite;
+        }
+
+        .admin-panel {
+            position: fixed;
+            inset: auto 16px 16px auto;
+            z-index: 50;
+            width: min(420px, calc(100vw - 32px));
+            max-height: calc(100vh - 32px);
+            overflow: auto;
+            display: none;
+            padding: 18px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, .22);
+        }
+
+        .admin-panel.open {
+            display: block;
+        }
+
+        .admin-panel h2 {
+            margin: 0 0 12px;
+            font-size: 24px;
+        }
+
+        .admin-panel label {
+            display: grid;
+            gap: 6px;
+            margin: 10px 0;
+            color: var(--muted);
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .admin-panel input {
+            width: 100%;
+            min-height: 42px;
+            padding: 9px 11px;
+            color: var(--ink);
+            background: var(--surface-2);
+            border: 1px solid var(--line);
+            border-radius: 7px;
+        }
+
+        .admin-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .maintenance-screen {
+            display: none;
+            min-height: calc(100vh - 64px);
+            place-items: center;
+            padding: 40px 18px;
+            text-align: center;
+        }
+
+        .maintenance-card {
+            width: min(620px, 100%);
+            padding: 34px 22px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .maintenance-card h2 {
+            margin: 0 0 12px;
+            font-size: clamp(30px, 6vw, 56px);
+            color: var(--brand);
+        }
+
+        .maintenance-card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 19px;
+            line-height: 1.8;
+        }
+
+        body.maintenance:not(.admin-on) .site-content {
+            display: none;
+        }
+
+        body.maintenance:not(.admin-on) .maintenance-screen {
+            display: grid;
+        }
+
+        @keyframes ticker {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(50%);
+            }
+        }
+
+        @keyframes shine {
+            0%, 100% {
+                background-position: 0% 50%;
+                transform: translateY(0);
+            }
+            50% {
+                background-position: 100% 50%;
+                transform: translateY(-2px);
+            }
+        }
+
+        @media (max-width: 720px) {
+            .topbar {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                justify-content: stretch;
+            }
+
+            .tool-button {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .hero {
+                min-height: 46vh;
+                padding-top: 38px;
+            }
+
+            .ticker-track,
+            .ticker-group {
+                gap: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="time-row">
+            <span class="pill">🕒 <span id="clock">--:--</span></span>
+            <span class="pill">📅 <span id="dateText">--</span></span>
+            <span class="pill">🕌 <span id="nextPrayer">جاري تحميل مواقيت الصلاة</span></span>
+        </div>
+        <div class="actions">
+            <button class="tool-button" id="themeToggle" type="button">مظهر داكن</button>
+            <button class="tool-button primary" id="adminToggle" type="button">إدارة خاصة</button>
+        </div>
+    </header>
+
+    <section class="maintenance-screen" aria-live="polite">
+        <div class="maintenance-card">
+            <h2>الموقع تحت الصيانة</h2>
+            <p>بنجهز حاجة أحسن ليكم. للتواصل السريع: واتساب 01015218428 أو موبايل 01143650328.</p>
+        </div>
+    </section>
+
+    <main class="site-content">
+        <section class="hero">
+            <div class="brand">
+                <div class="badge">إلكترونيات • إكسسوارات • صيانة • سوفت وير</div>
+                <h1>مركز المهندس</h1>
+                <p class="owner">م/ وائل شعبان ابوطه</p>
+                <p class="tagline">برمجة - صيانة - إكسسوارات - سوفت وير</p>
+            </div>
+        </section>
+
+        <section class="ticker address-ticker" aria-label="العنوان">
+            <div class="ticker-track">
+                <div class="ticker-group">
+                    <span class="address-item"><span class="icon icon-address">⌖</span> السيد محمد - أبوجلال - شربين</span>
+                    <span class="address-item"><span class="icon icon-address">⌖</span> السيد محمد - أبوجلال - شربين</span>
+                </div>
+                <div class="ticker-group" aria-hidden="true">
+                    <span class="address-item"><span class="icon icon-address">⌖</span> السيد محمد - أبوجلال - شربين</span>
+                    <span class="address-item"><span class="icon icon-address">⌖</span> السيد محمد - أبوجلال - شربين</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="ticker contact-ticker" aria-label="بيانات التواصل">
+            <div class="ticker-track">
+                <div class="ticker-group">
+                    <span class="contact-item"><span class="icon icon-whatsapp">☎</span> واتساب 01015218428</span>
+                    <span class="contact-item"><span class="icon icon-mobile">📱</span> موبايل 01143650328</span>
+                </div>
+                <div class="ticker-group" aria-hidden="true">
+                    <span class="contact-item"><span class="icon icon-whatsapp">☎</span> واتساب 01015218428</span>
+                    <span class="contact-item"><span class="icon icon-mobile">📱</span> موبايل 01143650328</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="prayer-strip" id="prayerStrip" aria-label="مواقيت الصلاة">
+            <article class="prayer-card"><span>الفجر</span><strong>--:--</strong></article>
+            <article class="prayer-card"><span>الشروق</span><strong>--:--</strong></article>
+            <article class="prayer-card"><span>الظهر</span><strong>--:--</strong></article>
+            <article class="prayer-card"><span>العصر</span><strong>--:--</strong></article>
+            <article class="prayer-card"><span>المغرب</span><strong>--:--</strong></article>
+            <article class="prayer-card"><span>العشاء</span><strong>--:--</strong></article>
+        </section>
+
+        <section class="products">
+            <div class="section-head">
+                <h2 class="section-title">منتجات مميزة</h2>
+                <span class="maintenance-note">أنت شايف الموقع كمدير رغم إن وضع الصيانة شغال</span>
+            </div>
+            <div class="grid" id="productsGrid"></div>
+        </section>
+
+        <footer class="credit">
+            <span>برمجة وتصميم حسام رضا</span>
+        </footer>
+    </main>
+
+    <aside class="admin-panel" id="adminPanel" aria-label="لوحة الإدارة">
+        <h2>لوحة الإدارة</h2>
+        <p class="tagline" style="margin:0 0 10px; font-size:15px;">أضف منتج بصورة وسعر، أو احذف منتج، أو فعّل وضع الصيانة.</p>
+
+        <label>
+            اسم المنتج
+            <input id="productName" type="text" placeholder="مثال: كابل شحن Type-C">
+        </label>
+        <label>
+            السعر
+            <input id="productPrice" type="text" placeholder="مثال: 120 جنيه">
+        </label>
+        <label>
+            رابط صورة المنتج
+            <input id="productImage" type="url" placeholder="https://example.com/image.jpg">
+        </label>
+        <label>
+            أو ارفع صورة من جهازك
+            <input id="productFile" type="file" accept="image/*">
+        </label>
+
+        <div class="admin-row">
+            <button class="tool-button primary" id="addProduct" type="button">إضافة المنتج</button>
+            <button class="tool-button" id="clearProductForm" type="button">مسح الخانات</button>
+            <button class="tool-button" id="maintenanceToggle" type="button">تشغيل الصيانة</button>
+            <button class="tool-button" id="logoutAdmin" type="button">خروج</button>
+        </div>
+    </aside>
+
+    <script>
+        const ADMIN_PASSWORD = 'Hosam1907';
+        const WHATSAPP_LINK = 'https://wa.me/201015218428';
+        const storageKeys = {
+            theme: 'mohandes-theme',
+            products: 'mohandes-products',
+            maintenance: 'mohandes-maintenance',
+            admin: 'mohandes-admin'
+        };
+
+        const defaultProducts = [
+            {
+                id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+                name: 'سماعات بلوتوث',
+                price: '250 جنيه',
+                image: 'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?auto=format&fit=crop&w=800&q=80'
+            },
+            {
+                id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + 1),
+                name: 'شاحن سريع',
+                price: '150 جنيه',
+                image: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=800&q=80'
+            }
+        ];
+
+        const productsGrid = document.getElementById('productsGrid');
+        const adminPanel = document.getElementById('adminPanel');
+        const themeToggle = document.getElementById('themeToggle');
+        const adminToggle = document.getElementById('adminToggle');
+        const maintenanceToggle = document.getElementById('maintenanceToggle');
+        const logoutAdmin = document.getElementById('logoutAdmin');
+        const addProduct = document.getElementById('addProduct');
+        const productName = document.getElementById('productName');
+        const productPrice = document.getElementById('productPrice');
+        const productImage = document.getElementById('productImage');
+        const productFile = document.getElementById('productFile');
+        const clearProductForm = document.getElementById('clearProductForm');
+        const clock = document.getElementById('clock');
+        const dateText = document.getElementById('dateText');
+        const nextPrayer = document.getElementById('nextPrayer');
+        const prayerStrip = document.getElementById('prayerStrip');
+
+        let products = loadProducts();
+        let prayerTimes = null;
+
+        function loadProducts() {
+            const saved = localStorage.getItem(storageKeys.products);
+            if (!saved) return defaultProducts;
+            try {
+                return JSON.parse(saved);
+            } catch {
+                return defaultProducts;
+            }
+        }
+
+        function saveProducts() {
+            localStorage.setItem(storageKeys.products, JSON.stringify(products));
+        }
+
+        function renderProducts() {
+            productsGrid.innerHTML = products.map(product => `
+                <article class="product">
+                    <button class="delete-product" type="button" data-id="${product.id}">حذف</button>
+                    <img src="${product.image}" alt="${product.name}">
+                    <div class="product-body">
+                        <h3>${product.name}</h3>
+                        <p>السعر: ${product.price}</p>
+                        <a class="order" href="${WHATSAPP_LINK}" target="_blank" rel="noopener">
+                            <span class="icon icon-whatsapp">☎</span>
+                            اطلب على واتساب
+                        </a>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function applyTheme() {
+            const theme = localStorage.getItem(storageKeys.theme) || 'light';
+            document.body.classList.toggle('dark', theme === 'dark');
+            themeToggle.textContent = theme === 'dark' ? 'مظهر فاتح' : 'مظهر داكن';
+        }
+
+        function applyMaintenance() {
+            const isMaintenance = localStorage.getItem(storageKeys.maintenance) === 'true';
+            const isAdmin = localStorage.getItem(storageKeys.admin) === 'true';
+            document.body.classList.toggle('maintenance', isMaintenance);
+            document.body.classList.toggle('admin-on', isAdmin);
+            maintenanceToggle.textContent = isMaintenance ? 'إيقاف الصيانة' : 'تشغيل الصيانة';
+        }
+
+        function updateClock() {
+            const now = new Date();
+            clock.textContent = now.toLocaleTimeString('ar-EG', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            dateText.textContent = now.toLocaleDateString('ar-EG', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            updateNextPrayer(now);
+        }
+
+        function formatTime12(value) {
+            const clean = String(value || '--:--').split(' ')[0];
+            const [rawHours, rawMinutes] = clean.split(':').map(Number);
+            if (Number.isNaN(rawHours) || Number.isNaN(rawMinutes)) return '--:--';
+            const period = rawHours >= 12 ? 'م' : 'ص';
+            const hours = rawHours % 12 || 12;
+            return `${hours}:${String(rawMinutes).padStart(2, '0')} ${period}`;
+        }
+
+        function prayerMinutes(value) {
+            const clean = String(value || '00:00').split(' ')[0];
+            const [hours, minutes] = clean.split(':').map(Number);
+            return (hours * 60) + minutes;
+        }
+
+        function renderPrayerTimes(timings) {
+            const prayers = [
+                ['الفجر', timings.Fajr],
+                ['الشروق', timings.Sunrise],
+                ['الظهر', timings.Dhuhr],
+                ['العصر', timings.Asr],
+                ['المغرب', timings.Maghrib],
+                ['العشاء', timings.Isha]
+            ];
+            prayerStrip.innerHTML = prayers.map(([name, time]) => `
+                <article class="prayer-card">
+                    <span>${name}</span>
+                    <strong>${formatTime12(time)}</strong>
+                </article>
+            `).join('');
+            prayerTimes = prayers.map(([name, time]) => ({
+                name,
+                display: formatTime12(time),
+                minutes: prayerMinutes(time)
+            }));
+            updateNextPrayer(new Date());
+        }
+
+        function updateNextPrayer(now) {
+            if (!prayerTimes) return;
+            const current = now.getHours() * 60 + now.getMinutes();
+            const upcoming = prayerTimes.find(prayer => prayer.minutes > current) || prayerTimes[0];
+            nextPrayer.textContent = `القادم: ${upcoming.name} ${upcoming.display}`;
+        }
+
+        async function loadPrayerTimes() {
+            try {
+                const response = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Shirbin&country=Egypt&method=5');
+                const result = await response.json();
+                renderPrayerTimes(result.data.timings);
+            } catch {
+                nextPrayer.textContent = 'مواقيت الصلاة تحتاج اتصال بالإنترنت';
+            }
+        }
+
+        function readUploadedImage() {
+            const file = productFile.files && productFile.files[0];
+            if (!file) return Promise.resolve('');
+            return new Promise(resolve => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => resolve('');
+                reader.readAsDataURL(file);
+            });
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const nextTheme = document.body.classList.contains('dark') ? 'light' : 'dark';
+            localStorage.setItem(storageKeys.theme, nextTheme);
+            applyTheme();
+        });
+
+        adminToggle.addEventListener('click', () => {
+            if (localStorage.getItem(storageKeys.admin) !== 'true') {
+                const password = prompt('اكتب كلمة مرور الإدارة');
+                if (password !== ADMIN_PASSWORD) {
+                    alert('كلمة المرور غير صحيحة');
+                    return;
+                }
+                localStorage.setItem(storageKeys.admin, 'true');
+            }
+            adminPanel.classList.toggle('open');
+            applyMaintenance();
+        });
+
+        logoutAdmin.addEventListener('click', () => {
+            localStorage.removeItem(storageKeys.admin);
+            adminPanel.classList.remove('open');
+            applyMaintenance();
+        });
+
+        maintenanceToggle.addEventListener('click', () => {
+            const active = localStorage.getItem(storageKeys.maintenance) === 'true';
+            localStorage.setItem(storageKeys.maintenance, String(!active));
+            applyMaintenance();
+        });
+
+        addProduct.addEventListener('click', async () => {
+            const name = productName.value.trim();
+            const price = productPrice.value.trim();
+            const uploadedImage = await readUploadedImage();
+            const image = uploadedImage || productImage.value.trim();
+
+            if (!name || !price || !image) {
+                alert('اكتب اسم المنتج والسعر وحط صورة أو رابط صورة');
+                return;
+            }
+
+            products.unshift({
+                id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+                name,
+                price,
+                image
+            });
+            saveProducts();
+            renderProducts();
+            productName.value = '';
+            productPrice.value = '';
+            productImage.value = '';
+            productFile.value = '';
+        });
+
+        clearProductForm.addEventListener('click', () => {
+            productName.value = '';
+            productPrice.value = '';
+            productImage.value = '';
+            productFile.value = '';
+            productName.focus();
+        });
+
+        productsGrid.addEventListener('click', event => {
+            const button = event.target.closest('.delete-product');
+            if (!button) return;
+            if (!confirm('تحذف المنتج ده؟')) return;
+            products = products.filter(product => product.id !== button.dataset.id);
+            saveProducts();
+            renderProducts();
+        });
+
+        applyTheme();
+        applyMaintenance();
+        renderProducts();
+        updateClock();
+        setInterval(updateClock, 1000);
+        loadPrayerTimes();
+    </script>
+</body>
+</html>
